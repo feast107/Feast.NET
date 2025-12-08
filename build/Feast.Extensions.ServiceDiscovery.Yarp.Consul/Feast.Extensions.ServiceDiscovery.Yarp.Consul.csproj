@@ -2,6 +2,18 @@
 
   <PropertyGroup>
     <TargetFrameworks>net10.0;net8.0;net6.0</TargetFrameworks>
+
+    <Version>0.1.0</Version>
+    <FileVersion>0.1.0</FileVersion>
+    <AssemblyVersion>0.1.0</AssemblyVersion>
+    
+    <Title>$(AssemblyName)</Title>
+    <Product>$(AssemblyName)</Product>
+    <PackageId>$(AssemblyName)</PackageId>
+    <PackageReleaseNotes>Initial release</PackageReleaseNotes>
+
+    <PackageTags>dotnet;yarp;consul;service discovery;destination resolve;reverse proxy</PackageTags>
+    <Description>Configure Consul as the destination resolving backend of Yarp</Description>
   </PropertyGroup>
 
   <ItemGroup>

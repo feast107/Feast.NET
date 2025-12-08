@@ -3,16 +3,33 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>preview</LangVersion>
-
-    <Version>1.1.0</Version>
-    <FileVersion>1.1.0</FileVersion>
-    <AssemblyVersion>1.1.0</AssemblyVersion>
-
+    
     <Authors>Feast</Authors>
-    <PackageIcon>Icon.png</PackageIcon>
+    <PackageIcon>Logo.png</PackageIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     
+    <Copyright>Copyright Feast. All rights reserved</Copyright>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/feast107/Feast.NET.git</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/feast107/Feast.NET</PackageProjectUrl>
+
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="..\Logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+      <Link>Logo.png</Link>
+    </None>
+
+    <None Include="README.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+      <Link>README.md</Link>
+    </None>
+  </ItemGroup>
 </Project>
