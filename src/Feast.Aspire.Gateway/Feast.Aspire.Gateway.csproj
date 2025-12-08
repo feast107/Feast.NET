@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\build\Feast.Extensions.ServiceDiscovery.Yarp.Consul\Feast.Extensions.ServiceDiscovery.Yarp.Consul.csproj" />
+    <ProjectReference Include="..\Feast.Aspire.Components.Consul\Feast.Aspire.Components.Consul.csproj" />
+    <ProjectReference Include="..\Feast.Aspire.Extensions.ServiceDefaults\Feast.Aspire.Extensions.ServiceDefaults.csproj" />
+  </ItemGroup>
+
+</Project>

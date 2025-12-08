@@ -1,0 +1,35 @@
+<Solution>
+  <Folder Name="/Aspire/">
+    <Project Path="src/Feast.Aspire.DbService/Feast.Aspire.DbService.csproj" />
+    <Project Path="src/Feast.Aspire.Gateway/Feast.Aspire.Gateway.csproj" />
+    <Project Path="src/Feast.Aspire.ApiService/Feast.Aspire.ApiService.csproj" />
+    <Project Path="src/Feast.Aspire.AppHost/Feast.Aspire.AppHost.csproj" />
+  </Folder>
+  <Folder Name="/Aspire/Components/">
+    <Project Path="src/Feast.Aspire.Components.Consul/Feast.Aspire.Components.Consul.csproj" />
+  </Folder>
+  <Folder Name="/Aspire/Extensions/">
+    <Project Path="src/Feast.Aspire.Extensions.ServiceDefaults/Feast.Aspire.Extensions.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/Extensions/" />
+  <Folder Name="/Extensions/ServiceDiscovery/">
+    <Project Path="build/Feast.Extensions.ServiceDiscovery.Yarp.Consul/Feast.Extensions.ServiceDiscovery.Yarp.Consul.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="src/Feast.UnitTest/Feast.UnitTest.csproj" />
+    <Project Path="src/Feast.Console/Feast.Console.csproj" />
+  </Folder>
+  <Folder Name="/_/">
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="LICENSE" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/_/build/">
+    <File Path="build/Directory.Build.props" />
+  </Folder>
+  <Folder Name="/_/src/">
+    <File Path="src/Directory.Build.props" />
+    <File Path="src/Directory.Packages.props" />
+  </Folder>
+</Solution>
