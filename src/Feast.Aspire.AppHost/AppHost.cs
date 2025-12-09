@@ -13,7 +13,8 @@ var postgres = builder.AddPostgres("postgres");
 var database = postgres.AddDatabase("database");
 
 var kafka = builder.AddKafka("kafka")
-    .WithKafkaUI();
+    .WithKafkaUI()
+    .WithEnvironment("KAFKA_AUTO_CREATE_TOPICS_ENABLE","true");
 
 var consul = builder.AddContainer("consul", "hashicorp/consul")
     .WithEndpoint(8500, 8500)
@@ -33,17 +34,21 @@ var consul = builder.AddContainer("consul", "hashicorp/consul")
 
 
 var dbService = builder.AddProject<Feast_Aspire_DbService>("db-service")
-    .WithReference(database)
     .WithConsulToken()
+    .WithReference(database)
+    .WithReference(kafka)
     .WaitFor(database)
-    .WaitFor(consul);
+    .WaitFor(consul)
+    .WaitFor(kafka);
 
 var apiService = builder.AddProject<Feast_Aspire_ApiService>("api-service")
     .WithReference(dbService)
     .WithConsulToken()
-    //.WithReplicas(2)
+    .WithReference(kafka)
+    .WithReplicas(2)
     .WaitFor(dbService)
-    .WaitFor(consul);
+    .WaitFor(consul)
+    .WaitFor(kafka);
 
 var gateway = builder.AddProject<Feast_Aspire_Gateway>("gateway")
     .WithConsulToken()

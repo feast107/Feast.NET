@@ -1,9 +1,14 @@
+using Confluent.Kafka;
+
 namespace Feast.Aspire.DbService.Endpoints;
 
 partial class Endpoints
 {
-    public static RouteGroupBuilder MapControlEndpoints(this RouteGroupBuilder endpoints)
+    public static TEndpointBuilder MapControlEndpoints<TEndpointBuilder>(this TEndpointBuilder endpoints)
+    where TEndpointBuilder : IEndpointRouteBuilder, IEndpointConventionBuilder
     {
+        var producer = endpoints.ServiceProvider.GetRequiredService<KafkaHostedProducer>();
+        
         endpoints.MapGet("/", () => States.AsJsonResult());
 
         endpoints.MapPut("reject", () =>
@@ -26,6 +31,13 @@ partial class Endpoints
             await context.Response.CompleteAsync();
             Environment.Exit(code ?? 0);
             return Results.Ok();
+        });
+
+        endpoints.AddEndpointFilter(async (context, next) =>
+        {
+            var execution = next(context);
+            await producer.Produce(context.HttpContext);
+            return await execution;
         });
         
         return endpoints;
