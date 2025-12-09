@@ -3,7 +3,7 @@ using Consul;
 using Microsoft.Extensions.Logging;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
-namespace Feast.Extensions.ServiceDiscovery.Yarp.Consul;
+namespace Feast.Extensions.ServiceDiscovery.Internal;
 
 internal class ConsulNotifyWorkersPlane : IAsyncDisposable
 {
@@ -12,11 +12,11 @@ internal class ConsulNotifyWorkersPlane : IAsyncDisposable
     private          CancellationTokenSource change = new();
     private          Task?                   initTask;
 
-    public bool Initialized => initTask is { IsCompleted: true };
+    private readonly ConcurrentDictionary<ConsulNotifyWorker, ConsulDestinationConfig[]> clients = [];
 
-    private readonly ConcurrentDictionary<ConsulNotifyWorker, ServiceEntry[]> clients = [];
+    public bool Initialized => initTask is { IsCompleted: true };
     
-    public IEnumerable<ServiceEntry> Entries => clients.Values.SelectMany(x => x);
+    public IEnumerable<ConsulDestinationConfig> Entries => clients.Values.SelectMany(x => x);
 
     public CancellationToken ChangeToken => change.Token;
 
@@ -53,7 +53,6 @@ internal class ConsulNotifyWorkersPlane : IAsyncDisposable
         await Task.WhenAll(inits.Select(x => x.Task));
     }
     
-    
     private async Task ClientOnChanged(ConsulNotifyWorker sender, ServiceEntry[] entries, Exception? error)
     {
         if (error is not null)
@@ -64,7 +63,7 @@ internal class ConsulNotifyWorkersPlane : IAsyncDisposable
             }
             return;
         }
-        clients[sender] = entries;
+        clients[sender] = entries.Select(ConsulDestinationConfig.Transform).ToArray();
         var stash = change;
         change = new CancellationTokenSource();
 #if NET10_0
@@ -79,14 +78,20 @@ internal class ConsulNotifyWorkersPlane : IAsyncDisposable
         }
     }
 
+    
     public async ValueTask DisposeAsync()
     {
-        initTask?.Dispose();
+        if (initTask is not null)
+        {
+            await initTask;
+            initTask.Dispose();
+        }
 #if NET10_0
         await stop.CancelAsync();
 #else 
         stop.Cancel();
 #endif
+        stop.Dispose();
         foreach (var client in clients.Keys) await client.DisposeAsync();
     }
 }

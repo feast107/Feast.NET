@@ -1,6 +1,6 @@
 using Consul;
 
-namespace Feast.Extensions.ServiceDiscovery.Yarp.Consul;
+namespace Feast.Extensions.ServiceDiscovery;
 
 public class ConsulQueryOptions : QueryOptions
 {

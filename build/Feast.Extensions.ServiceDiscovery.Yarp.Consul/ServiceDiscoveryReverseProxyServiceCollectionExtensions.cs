@@ -1,4 +1,5 @@
-using Feast.Extensions.ServiceDiscovery.Yarp.Consul;
+using Feast.Extensions.ServiceDiscovery;
+using Feast.Extensions.ServiceDiscovery.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Yarp.ReverseProxy.ServiceDiscovery;
 

@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Feast.Aspire.Components.Consul\Feast.Aspire.Components.Consul.csproj" />
+    <ProjectReference Include="..\Feast.Aspire.Components.Kafka\Feast.Aspire.Components.Kafka.csproj" />
     <ProjectReference Include="..\Feast.Aspire.Extensions.ServiceDefaults\Feast.Aspire.Extensions.ServiceDefaults.csproj" />
   </ItemGroup>
 

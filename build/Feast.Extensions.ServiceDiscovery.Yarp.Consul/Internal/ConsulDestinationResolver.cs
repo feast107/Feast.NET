@@ -5,7 +5,7 @@ using Microsoft.Extensions.Primitives;
 using Yarp.ReverseProxy.ServiceDiscovery;
 using DestinationConfig = Yarp.ReverseProxy.Configuration.DestinationConfig;
 
-namespace Feast.Extensions.ServiceDiscovery.Yarp.Consul;
+namespace Feast.Extensions.ServiceDiscovery.Internal;
 
 internal class ConsulDestinationResolver(
     IEnumerable<IConsulClient> clients,
@@ -36,25 +36,13 @@ internal class ConsulDestinationResolver(
             {
                 await worker.StartAsync(cancellationToken);
             }
-            foreach (var keyValuePair in Transform(worker.Entries))
+            foreach (var destinationConfig in worker.Entries)
             {
-                result.Add(keyValuePair.Key, keyValuePair.Value);
+                result.Add(destinationConfig.Id, destinationConfig.DestinationConfig);
             }
             tokens.Add(new CancellationChangeToken(worker.ChangeToken));
         }
         return new ResolvedDestinationCollection(result, new CompositeChangeToken(tokens));
     }
-
-    private static IEnumerable<KeyValuePair<string, DestinationConfig>> Transform(IEnumerable<ServiceEntry> entries) =>
-        from entry in entries 
-        select new KeyValuePair<string, DestinationConfig>($"consul/{entry.Node.Name}/{entry.Service.ID}",
-            new ()
-            {
-                Address  = $"{GetSchema(entry.Service.Meta)}://{entry.Service.Address}:{entry.Service.Port}",
-                Metadata = new Dictionary<string, string>(entry.Service.Meta),
-            });
-
-    private static string GetSchema(IDictionary<string, string> meta) => 
-        meta.TryGetValue("secure", out var secure) && secure == "false" ? "http" : "https";
-
+    
 }

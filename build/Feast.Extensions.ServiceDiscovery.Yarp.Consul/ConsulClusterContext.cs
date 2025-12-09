@@ -1,6 +1,6 @@
 using Consul;
 
-namespace Feast.Extensions.ServiceDiscovery.Yarp.Consul;
+namespace Feast.Extensions.ServiceDiscovery;
 
 /// <summary>
 /// those have same serviceId and datacenter, consider as a same resolvation 

@@ -13,32 +13,22 @@ public class Tests
     [Test]
     public async Task Test()
     {
-        var source = new CancellationTokenSource();
-
-        source.Token.Register(_ =>
+        var arr = new string[1000];
+        Array.Fill(arr, "abc");
+        for (var i = 0; i < 5; i++)
         {
-            Console.WriteLine("Cancellation requested");
-        }, null);
-        
-        await source.CancelAsync();
+            var watch = Stopwatch.StartNew();
+            //var conv = arr.Select(Transform).ToArray();
+            var conv = new string[1000];
+            for (var j = 0; j < arr.Length; j++)
+            {
+                conv[j] = Transform(arr[j]);
+            }
+            var cost = watch.ElapsedTicks;
+            Console.WriteLine(cost);
+        }
 
-        source.Token.Register(_ =>
-        {
-            Console.WriteLine("Cancellation requested");
-        }, null);
-
-        
-        await source.CancelAsync();
+        string Transform(string s) => s.ToUpperInvariant();
     }
-
-    [Test]
-    public void Match()
-    {
-        var wrap = new Wrap("A", "B");
-        var eq   = wrap.Equals(new Wrap("A", "B"));
-        Debugger.Break();
-    }
-
-    record Wrap(string A, string B);
     
 }

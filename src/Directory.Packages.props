@@ -7,21 +7,21 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- Aspire -->
-    <PackageVersion Include="Aspire.Azure.Messaging.ServiceBus" Version="$(AspireVersion)" />
+    <PackageVersion Include="Aspire.Confluent.Kafka" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.Hosting.AppHost" Version="$(AspireVersion)" />
-    <PackageVersion Include="Aspire.Hosting.Azure.ServiceBus" Version="$(AspireVersion)" />
+    <PackageVersion Include="Aspire.Hosting.Kafka" Version="$(AspireVersion)" />
     <PackageVersion Include="Aspire.Hosting.Kubernetes" Version="$(AspireVersion)-preview.1.25603.5" />
     <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="$(AspireVersion)" />
     <!-- .NET  -->
+    <PackageVersion Include="Aspire.Hosting.Redis" Version="13.0.2" />
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(DotNetVersion)" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="$(DotNetVersion)" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="$(DotNetVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="$(DotNetVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.Primitives" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Primitives" Version="$(DotNetVersion)" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="$(DotNetVersion)" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery.Yarp" Version="$(DotNetVersion)" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(DotNetVersion)" />
-    <PackageVersion Include="Steeltoe.Discovery.HttpClients" Version="4.0.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="$(DotNetVersion)" />
     <!-- OTEL -->
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="$(OTELVersion)" />
@@ -29,6 +29,8 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="$(OTELVersion)" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="$(OTELVersion)" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="$(OTELVersion)" />
+    <!-- 3rd -->
+    <PackageVersion Include="Steeltoe.Discovery.HttpClients" Version="4.0.0" />
     <PackageVersion Include="Steeltoe.Discovery.Consul" Version="4.0.0" />
     <PackageVersion Include="Yarp.ReverseProxy" Version="2.3.0" />
     <!-- Unit Test -->

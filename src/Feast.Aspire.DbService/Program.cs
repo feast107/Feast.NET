@@ -1,3 +1,4 @@
+using Confluent.Kafka;
 using Feast.Aspire.DbService;
 using Feast.Aspire.DbService.Endpoints;
 using Feast.Aspire.Extensions.ServiceDefaults;
@@ -14,7 +15,11 @@ builder.Services.AddHostedService<MainDbContext>(s =>
     var scope   = s.CreateScope();
     return scope.ServiceProvider.GetRequiredService<MainDbContext>();
 });
-
+builder.AddKafkaProducer<int, int>("", configureSettings: c =>
+{
+    IProducer<int, int> p;
+    c.Config.Acks = Acks.All;
+});
 // register self to consul
 // unfortunately this method only accepts IConfiguration
 builder.Services.AddConsulDiscoveryClient();

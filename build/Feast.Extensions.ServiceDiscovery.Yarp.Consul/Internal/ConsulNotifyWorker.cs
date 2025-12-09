@@ -1,6 +1,6 @@
 using Consul;
 
-namespace Feast.Extensions.ServiceDiscovery.Yarp.Consul;
+namespace Feast.Extensions.ServiceDiscovery.Internal;
 
 internal class ConsulNotifyWorker(
     IConsulClient client,
@@ -10,7 +10,7 @@ internal class ConsulNotifyWorker(
 {
     private ulong lastIndex;
     private Task? query;
-    
+
     public void Start(TaskCompletionSource initialize, CancellationToken stop)
     {
         if (query != null) return;
@@ -43,11 +43,9 @@ internal class ConsulNotifyWorker(
 
     public async ValueTask DisposeAsync()
     {
-        if (query is not null)
-        {
-            await query;
-            query.Dispose();
-        }
+        if (query is null) return;
+        await query;
+        query.Dispose();
     }
 
     public override string ToString() => $"{nameof(ConsulNotifyWorker)}:[{context.DataCenter}/{context.Service}]";

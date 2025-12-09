@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
 using Yarp.ReverseProxy.Configuration;
 
-namespace Feast.Extensions.ServiceDiscovery.Yarp.Consul;
+namespace Feast.Extensions.ServiceDiscovery;
 
 public partial class ConsulDestinationResolverOptions
 {
