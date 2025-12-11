@@ -9,22 +9,23 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 builder.Services.AddOpenApi();
-builder.Services.AddDbContext<MainDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("database")));
-builder.Services.AddHostedService<MainDbContext>(s =>
+builder.Services.AddDbContext<MainDbContext>(o => o.UseNpgsql(builder.Configuration.GetConnectionString("database")));
+builder.Services.AddHostedService<MainDbContext>(static s =>
 {
-    var scope   = s.CreateScope();
+    var scope = s.CreateScope();
     return scope.ServiceProvider.GetRequiredService<MainDbContext>();
 });
 builder.AddKafkaProducer<Guid, string>("kafka",
-    (provider, producerBuilder) =>
+    (_, producerBuilder) =>
     {
         producerBuilder.SetKeySerializer(KafkaGuidSerializer.Instance);
     });
+builder.Services.AddSingleton<KafkaHostedProducer>()
+    .AddRegisteredHostedService<KafkaHostedProducer>();
+
 // register self to consul
 // unfortunately this method only accepts IConfiguration
 builder.Services.AddConsulDiscoveryClient();
-builder.Services.AddSingleton<KafkaHostedProducer>()
-    .AddRegisteredHostedService<KafkaHostedProducer>();
 
 var app = builder.Build();
 
