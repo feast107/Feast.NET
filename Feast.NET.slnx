@@ -6,7 +6,7 @@
     <Project Path="src/Feast.Aspire.AppHost/Feast.Aspire.AppHost.csproj" />
   </Folder>
   <Folder Name="/Aspire/Components/">
-    <Project Path="Feast.Aspire.Components.Redis/Feast.Aspire.Components.Redis.csproj" />
+    <Project Path="src/Feast.Aspire.Components.Redis/Feast.Aspire.Components.Redis.csproj" />
     <Project Path="src/Feast.Aspire.Components.Consul/Feast.Aspire.Components.Consul.csproj" />
     <Project Path="src/Feast.Aspire.Components.Kafka/Feast.Aspire.Components.Kafka.csproj" />
   </Folder>
