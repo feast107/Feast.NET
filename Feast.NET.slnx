@@ -14,6 +14,9 @@
     <Project Path="src/Feast.Aspire.Extensions.ServiceDefaults/Feast.Aspire.Extensions.ServiceDefaults.csproj" />
   </Folder>
   <Folder Name="/Extensions/" />
+  <Folder Name="/Extensions/Http/">
+    <Project Path="build/Feast.Extensions.Http.Buffering/Feast.Extensions.Http.Buffering.csproj" />
+  </Folder>
   <Folder Name="/Extensions/ServiceDiscovery/">
     <Project Path="build/Feast.Extensions.ServiceDiscovery.Yarp.Consul/Feast.Extensions.ServiceDiscovery.Yarp.Consul.csproj" />
   </Folder>
