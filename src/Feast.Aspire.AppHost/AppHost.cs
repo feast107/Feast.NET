@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Feast.Aspire.AppHost.Mounts;
 using Projects;
 
@@ -14,7 +15,7 @@ var database = postgres.AddDatabase("database");
 
 var kafka = builder.AddKafka("kafka")
         .WithKafkaUI();
-
+string? consulToken = null;
 var consul = builder.AddContainer("consul", "hashicorp/consul")
     .WithEndpoint(8500, 8500)
     .WithArgs(c =>
@@ -25,16 +26,37 @@ var consul = builder.AddContainer("consul", "hashicorp/consul")
         c.Args.Add("0.0.0.0");
         c.Args.Add("-config-dir=/etc/consul.d/");
     })
-    //if using acl, this should be persistent
-    //& call 'consul acl bootstrap' to get secret-id add into token
-    .WithLifetime(ContainerLifetime.Persistent)
     .WithUrl("http://localhost:8500")
-    .WithDefaultMount();
+    .WithDefaultMount()
+    //if using acl call 'consul acl bootstrap' to get secret-id add into token
+    .OnResourceReady(async (r, e, c) =>
+    {
+        foreach (var name in r.GetContainerNames())
+        {
+            var info = new ProcessStartInfo()
+            {
+                FileName               = "cmd",
+                Arguments              = $"docker exec {name} consul acl bootstrap",
+                RedirectStandardInput  = true,
+                RedirectStandardOutput = true,
+                UseShellExecute        = false,
+                CreateNoWindow         = true 
+            };
+            using var cmd = Process.Start(info)!;
+            await cmd.StandardInput.WriteAsync($"docker exec {name} consul acl bootstrap\n");
+            while (await cmd.StandardOutput.ReadLineAsync() is { } output)
+            {
+                if (!output.StartsWith("SecretID:")) continue;
+                consulToken = output.Replace("SecretID:","").Trim();
+                break;
+            }
+        }
+    });;
 
 
 var dbService = builder.AddProject<Feast_Aspire_DbService>("db-service")
-    .WithConsulToken()
-    .WithReference(database) 
+    .WithConsulToken(() => consulToken)
+    .WithReference(database)
     .WithReference(kafka)
     .WaitFor(database)
     .WaitFor(consul)
@@ -42,16 +64,16 @@ var dbService = builder.AddProject<Feast_Aspire_DbService>("db-service")
 
 var apiService = builder.AddProject<Feast_Aspire_ApiService>("api-service")
     .WithReference(dbService)
-    .WithConsulToken()
+    .WithConsulToken(() => consulToken)
     .WithReference(kafka)
-    .WithReplicas(2)
+    //.WithReplicas(2)
     .WaitFor(dbService)
     .WaitFor(consul)
     .WaitFor(kafka);
 
 var gateway = builder.AddProject<Feast_Aspire_Gateway>("gateway")
-    .WithConsulToken()
     .WithReference(apiService)
+    .WithConsulToken(() => consulToken)
     .WaitFor(apiService);
 
 var app = builder.Build();
@@ -62,7 +84,22 @@ file static class Extensions
 {
     extension<T>(IResourceBuilder<T> builder) where T : IResourceWithEnvironment
     {
-        public IResourceBuilder<T> WithConsulToken() => 
-            builder.WithEnvironment("Consul:Token", "ffdea316-fbdd-3ddd-52ea-bba6a9d23c39");
+        public IResourceBuilder<T> WithConsulToken(Func<string?> token) =>
+            builder.WithEnvironment(c =>
+            {
+                c.EnvironmentVariables.Add("Consul:Token", token() ?? throw new ArgumentNullException(nameof(token)));
+            });
+    }
+    
+    public static IEnumerable<string> GetContainerNames(this ContainerResource container)
+    {
+        var dcp       = container.Annotations.First(x => x.GetType().Name == "DcpInstancesAnnotation");
+        if (dcp.GetType().GetProperty("Instances")?.GetMethod?.Invoke(dcp,null) is not IEnumerable<object> instances) 
+            yield break;
+        foreach (var instance in instances)
+        {
+            if (instance.GetType().GetProperty("Name")?.GetMethod?.Invoke(instance, null) is string name)
+                yield return name;
+        }
     }
 }
